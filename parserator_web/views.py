@@ -18,9 +18,13 @@ class AddressParse(APIView):
         address = request.query_params['address']
         # TODO: Flesh out this method to parse an address string using the
         # parse() method and return the parsed components to the frontend.
-        address_components, address_type = self.parse(address)
-        #print("parsed:", address_components, address_type)
-        return Response({'input_string':address, 'address_components':address_components, 'address_type':address_type})
+        try:
+            address_components, address_type = self.parse(address)
+            #print("parsed:", address_components, address_type)
+            return Response({'input_string':address, 'address_components':address_components, 'address_type':address_type})
+        except Exception as exc:
+            raise ParseError(detail=exc.message)
+
 
     def parse(self, address):
 
