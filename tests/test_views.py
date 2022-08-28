@@ -1,5 +1,6 @@
-import pytest
+# import pytest
 import usaddress
+from collections import OrderedDict
 
 
 def test_api_parse_succeeds(client):
@@ -20,6 +21,11 @@ def test_api_parse_succeeds(client):
     assert 'address_components' in data.keys()
     assert 'address_type' in data.keys()
 
+    # make sure the return data is of the type we expect
+    assert type(data['input_string']) == str
+    assert type(data['address_components']) in [dict, OrderedDict]
+    assert type(data['address_type']) == str
+
     # check the values of the returned data
     assert data['input_string'] == address_string
     address_components, address_type = usaddress.tag(address_string)  # let's assume testing in usaddress makes sure this is correct
@@ -31,11 +37,11 @@ def test_api_parse_raises_error(client):
     # TODO: Finish this test. The address_string below will raise a
     # RepeatedLabelError, so ParseAddress.parse() will not be able to parse it.
 
-    # it's not clear to me what the desired behavior is when usaddress.parse raises an error
-    # I settled on catching that error and passing the information in it back to the user.
-    # However, I could see security reasons where we would want to be more vague about what 
-    # kinds of errors occurred and what information we would want to pass back, and I would 
-    # consult with colleagues about this
+    # it's not clear to me what the desired behavior is when usaddress.parse raises an
+    # error I settled on catching that error and passing the information in it back
+    # to the user. However, I could see security reasons where we would want to be
+    # more vague about what errors occurred and what information we would want to pass
+    # back, and I would consult with colleagues about this
 
     address_string = '123 main st chicago il 123 main st'
 
@@ -47,4 +53,3 @@ def test_api_parse_raises_error(client):
     data = response.data
     assert type(data) == dict
     assert 'detail' in data.keys()
-    
