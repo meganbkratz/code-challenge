@@ -3,10 +3,8 @@
 
 window.onload = setSubmitBtnListener;
 
-// pick up submit button press
-
 function setSubmitBtnListener() {
-   console.log("Lookin for buttons");
+   // set up listener for a form submit event
    const form = document.querySelector('form');
    form.addEventListener('submit', event => {
       event.preventDefault();
@@ -15,11 +13,9 @@ function setSubmitBtnListener() {
 }
 
 function submitClicked() {
-   console.log("Submit button clicked!");
-   //get address text
 
+   //get address text
    const address = document.querySelector("#address").value; //should get address string
-   console.log("address:", address)
 
    if (address.trim() == '') {
       displayError('No input detected. Please enter an address to parse.');
@@ -29,11 +25,8 @@ function submitClicked() {
    //send address to parser
    fetch("/api/parse/?" + new URLSearchParams({address:address}).toString())
       .then(response => {
-         console.log("we're in the then block")
-         console.log(response);
          response.json()
             .then(data => {
-               console.log(data);
                if (response.ok){
                   populateResults(data);
                }
@@ -43,20 +36,13 @@ function submitClicked() {
             });
       })
       .catch(err => {
-         console.log("we're in the catch block");
-         console.log(err);
          displayError("There was a problem accessing the parser.")
-
-      //Handle errors
       })
 }
- // send GET request to api/parse/ -- use fetch   <-----NEXT!
- // recieve results back, populate table
 
 function populateResults(data) {
-   console.log("populateResults called!");
 
-   // show results div
+   // make sure results div is visible
    setVisible("results");
    
    const span = document.getElementById("parse-type")
@@ -73,7 +59,6 @@ function populateResults(data) {
       let part = row.insertCell(1);
       part.innerHTML = component;
    }
-   console.log("done populating table")
 }
 
 function displayError(message) {
@@ -83,6 +68,10 @@ function displayError(message) {
 }
 
 function setVisible(type) {
+   // Toggles between the results div and the error div being visible.
+   // Argument is a string ('results' or 'error') corresponding to which 
+   // div to set visible. The other is automatically hidden.
+
    const results_div = document.getElementById("address-results");
    const error_div = document.getElementById("error-display");
 
