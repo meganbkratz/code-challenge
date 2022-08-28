@@ -27,7 +27,7 @@ function submitClicked() {
    }
 
    //send address to parser
-   fetch("/api/parse?" + new URLSearchParams({address:address}).toString())
+   fetch("/api/parse/?" + new URLSearchParams({address:address}).toString())
       .then(response => {
          console.log("we're in the then block")
          console.log(response);
