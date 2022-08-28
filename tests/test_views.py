@@ -31,11 +31,13 @@ def test_api_parse_raises_error(client):
     # TODO: Finish this test. The address_string below will raise a
     # RepeatedLabelError, so ParseAddress.parse() will not be able to parse it.
 
-    address_string = '123 main st chicago il 123 main st'
+    # it's not clear to me what the desired behavior is when usaddress.parse raises an error
+    # I settled on catching that error and passing the information in it back to the user.
+    # However, I could see security reasons where we would want to be more vague about what 
+    # kinds of errors occurred and what information we would want to pass back, and I would 
+    # consult with colleagues about this
 
-    # assert that AddressParse.parse raises a RepeatedLabelError - I don't actually know how to do this
-    #with pytest.raises(usaddress.RepeatedLabelError):
-    #    client.parse(address_string)
+    address_string = '123 main st chicago il 123 main st'
 
     # assert that AddressParse.get returns a response that includes the error
     response = client.get("/api/parse/", {'address': address_string})
