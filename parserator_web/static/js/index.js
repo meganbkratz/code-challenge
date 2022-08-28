@@ -21,7 +21,7 @@ function submitClicked() {
    const address = document.querySelector("#address").value; //should get address string
    console.log("address:", address)
 
-   if (address == '') {
+   if (address.trim() == '') {
       displayError('No input detected. Please enter an address to parse.');
       return;
    }
