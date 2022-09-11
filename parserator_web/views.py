@@ -24,8 +24,11 @@ class AddressParse(APIView):
         If there is an error in parsing the address, raise a ParseError which includes
         an error message in its 'detail' field.
         """
+        try:
+            address = request.query_params['address']
+        except KeyError:
+            raise ParseError("Invalid request. Missing 'address' parameter.")
 
-        address = request.query_params['address']
         try:
             address_components, address_type = self.parse(address)
             return Response({

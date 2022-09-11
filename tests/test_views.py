@@ -53,3 +53,16 @@ def test_api_parse_raises_error(client):
     data = response.data
     assert type(data) == dict
     assert 'detail' in data.keys()
+
+
+def test_api_parse_no_address_key(client):
+    # Test that if we return a 400 error (rather than the default 500 error) if we
+    # don't get an 'address' key
+
+    response = client.get("/api/parse/")
+    assert response.status_code == 400
+    assert 'detail' in response.data.keys()
+
+    response = client.get("/api/parse/", {'adddress': "123 E Main St"})
+    assert response.status_code == 400
+    assert 'detail' in response.data.keys()
