@@ -22,7 +22,7 @@ class AddressParse(APIView):
                                     by usaddress.tag
             - 'address_type': a string with the address type as returned by usaddress.tag
         If there is an error in parsing the address, raise a ParseError which includes
-        the error message in its 'detail' field.
+        an error message in its 'detail' field.
         """
 
         address = request.query_params['address']
@@ -33,8 +33,9 @@ class AddressParse(APIView):
                 'address_components': address_components,
                 'address_type': address_type,
                 })
-        except Exception as exc:
-            raise ParseError(detail=exc.message)
+        except usaddress.RepeatedLabelError:
+            raise ParseError(detail='The address "%s" could not be parsed. Please check that the address is correct and try again.\
+                \n\n To report an error in parsing a valid address, please open an issue at https://github.com/datamade/usaddress/issues/new' % address)
 
     def parse(self, address):
         """
