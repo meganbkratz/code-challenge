@@ -14,11 +14,37 @@ class AddressParse(APIView):
     renderer_classes = [JSONRenderer]
 
     def get(self, request):
-        # TODO: Flesh out this method to parse an address string using the
-        # parse() method and return the parsed components to the frontend.
-        return Response({})
+        """
+        Given a rest_framework.Request with an 'address' key, return a Response object
+        with the keys:
+            - 'input_string' : the string passed in as 'address'
+            - 'address_components': a dictionary of parsed address components as returned
+                                    by usaddress.tag
+            - 'address_type': a string with the address type as returned by usaddress.tag
+        If there is an error in parsing the address, raise a ParseError which includes
+        an error message in its 'detail' field.
+        """
+        try:
+            address = request.query_params['address']
+        except KeyError:
+            raise ParseError("Invalid request. Missing 'address' parameter.")
+
+        try:
+            address_components, address_type = self.parse(address)
+            return Response({
+                'input_string': address,
+                'address_components': address_components,
+                'address_type': address_type,
+                })
+        except usaddress.RepeatedLabelError:
+            raise ParseError(detail='The address "%s" could not be parsed. Please check that the address is correct and try again.\
+                \n\n To report an error in parsing a valid address, please open an issue at https://github.com/datamade/usaddress/issues/new' % address)
 
     def parse(self, address):
-        # TODO: Implement this method to return the parsed components of a
-        # given address using usaddress: https://github.com/datamade/usaddress
+        """
+        Given a string, try to parse it into address components using usaddress.tag.
+        Return a tuple of (address_components, address_type)
+        """
+
+        address_components, address_type = usaddress.tag(address)
         return address_components, address_type
